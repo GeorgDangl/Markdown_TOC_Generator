@@ -1,70 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 
 namespace GenerateMarkdownTOC
 {
-    class GenerateTOC
+    class GenerateToc
     {
-        public static string TOC(string Filepath, bool SaveToFile)
+        public static string Toc(string filepath, bool saveToFile)
         {
-            List<string> Elements = new List<string>();
-            List<int> ElementsHierarchy = new List<int>();
-            StringBuilder OutputFileStringbuilder = new StringBuilder();
-            StringBuilder TocStringBuilder = new StringBuilder();
-            using (StreamReader CurrentStreamReader = new StreamReader(Filepath))
+            var elements = new List<string>();
+            var elementsHierarchy = new List<int>();
+            var outputFileStringbuilder = new StringBuilder();
+            var tocStringBuilder = new StringBuilder();
+            using (var currentStreamReader = new StreamReader(filepath))
             {
-                bool Continue = true;
-                while (Continue)
+                while (true)
                 {
-                    string Currentline = CurrentStreamReader.ReadLine();
-                    if (Currentline == null)
+                    var currentline = currentStreamReader.ReadLine();
+                    if (currentline == null)
                     {
-                        Continue = false;
                         break;
                     }
-                    if (SaveToFile)
+                    if (saveToFile)
                     {
-                        OutputFileStringbuilder.AppendLine(Currentline);
+                        outputFileStringbuilder.AppendLine(currentline);
                     }
-                    if (Currentline.Trim().Length > 0 && Currentline.Trim()[0] == '#')
+                    if (currentline.Trim().Length > 0 && currentline.Trim()[0] == '#')
                     {
-                        int Hierarchy = -1;
-                        for (int i = 0; i < Currentline.Trim().Length; i++)
+                        var hierarchy = -1;
+                        for (var i = 0; i < currentline.Trim().Length; i++)
                         {
-                            if (Currentline.Trim()[i] == '#')
+                            if (currentline.Trim()[i] == '#')
                             {
-                                Hierarchy++;
+                                hierarchy++;
                             }
                             else
                             {
-                                ElementsHierarchy.Add(Hierarchy);
-                                Elements.Add(Currentline.Trim().TrimEnd('#').TrimStart('#').Trim());
+                                elementsHierarchy.Add(hierarchy);
+                                elements.Add(currentline.Trim().TrimEnd('#').TrimStart('#').Trim());
                                 break;
                             }
                         }
                     }
                 }
-                TocStringBuilder.AppendLine("**Table of Contents**");
-                TocStringBuilder.AppendLine("");
-                for (int i = 0; i < Elements.Count; i++)
+                tocStringBuilder.AppendLine("**Table of Contents**");
+                tocStringBuilder.AppendLine("");
+                for (var i = 0; i < elements.Count; i++)
                 {
-                    TocStringBuilder.AppendLine(new string('\t', ElementsHierarchy[i]) + "- " + "[" + Elements[i] + "]" + "(#" + Elements[i].Replace(' ', '-').Replace(".", "").Replace("(", "").Replace(")", "").ToLower() + ")");
+                    tocStringBuilder.AppendLine(new string('\t', elementsHierarchy[i]) + "- " + "[" + elements[i] + "]" + "(#" + elements[i].Replace(' ', '-').Replace(".", "").Replace("(", "").Replace(")", "").ToLower() + ")");
                 }
             }
-            if (SaveToFile)
+            if (saveToFile)
             {
-                using (StreamWriter CurrentFileStreamWriter = new StreamWriter(Filepath, false))
+                using (var currentFileStreamWriter = new StreamWriter(filepath, false))
                 {
-                    CurrentFileStreamWriter.WriteLine(TocStringBuilder.ToString());
-                    CurrentFileStreamWriter.WriteLine(OutputFileStringbuilder.ToString());
+                    currentFileStreamWriter.WriteLine(tocStringBuilder.ToString());
+                    currentFileStreamWriter.WriteLine(outputFileStringbuilder.ToString());
                 }
             }
-            return TocStringBuilder.ToString();
+            return tocStringBuilder.ToString();
 
         }
     }

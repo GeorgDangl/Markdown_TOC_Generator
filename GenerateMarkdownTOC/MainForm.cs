@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 
 namespace GenerateMarkdownTOC
 {
@@ -20,17 +12,17 @@ namespace GenerateMarkdownTOC
 
         private void button_Generate_Click(object sender, EventArgs e)
         {
-            OpenFileDialog TempOFD = new OpenFileDialog();
-            if (TempOFD.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            var tempOfd = new OpenFileDialog();
+            if (tempOfd.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
                     textBox.Text = "";
-                    textBox.Text = GenerateTOC.TOC(TempOFD.FileName, checkBox.Checked);
+                    textBox.Text = GenerateToc.Toc(tempOfd.FileName, checkBox.Checked);
                 }
-                catch (Exception CaughtException)
+                catch (Exception caughtException)
                 {
-                    textBox.Text = "Error in TOC generation:\n" + CaughtException.Message;
+                    textBox.Text = "Error in TOC generation:\n" + caughtException.Message;
                 }
             }
         }
